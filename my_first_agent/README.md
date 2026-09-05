@@ -7,16 +7,16 @@
 
 ### System Designer Name
 
-[Enter your name.]
+[Pedro Calvillo]
 
 
 ### System Name
 
-[Use a default name "HackTrack" or enter the name you choose for the system.]
+[HackTrack]
 
 ### System Goal
-[Read Chapter 2 Section 2.1, then enter the well-structured goal of your agentic system]
+[HackTrack will estimate the number of registered students that woukd be likely to attend CPVC AI Hackathon by combining registration data with optional, attendance check ins and past event attendance patterns, so organizers can plan food, drinks, and swag within their budget while protecting participant privacy.]
 
 ### Who Is Better Off When This Works?
 
-[In one complete sentence, identify who will be better off when the system works.]
+[CPVC organizers and hackathon participants are better off because organizers can prepare appropriate event resources and participants receive a better supported event experience]
