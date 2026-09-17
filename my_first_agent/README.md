@@ -17,4 +17,4 @@ For CPVC AI Hackathon organizers, accurately planing food, drinks, and swag for 
 
 ### Who Is Better Off When This Works?
 
-CPVC organizers and hackathon participants are better off because organizers can prepare appropriate event resources and participants receive a better supported event experience
+Hackathom organizers are better off because they will be able to make smarter purchasing descions in order to reduce wasted food, drinks and swag. Registered students will also be better off as theyll likely to receive a better supported event experience from supplies available while their privacy is secure.
