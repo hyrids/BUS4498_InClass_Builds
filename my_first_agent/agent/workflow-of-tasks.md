@@ -8,7 +8,7 @@ This workflow supports the system goal defined in `my_first_agent/README.md`.
 
 ### 1.2 Workflow Trigger
 
-[Describe the event, request, schedule, or condition that starts the workflow.]
+A forecasting run begins when a CPVC AI Hackathon organizer selects Create Attendance Forecast after registration opens. An updated forecasting run begins when the organizer adds new registration information, receives new optional attendance-intent responses, or requests a new forecast before making supply purchases. An update uses the most current available data and does not contact students automatically.
 
 ### 1.3 Completion Condition at Runtime
 
