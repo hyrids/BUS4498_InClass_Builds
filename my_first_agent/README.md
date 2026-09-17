@@ -7,16 +7,16 @@
 
 ### System Designer Name
 
-[Pedro Calvillo]
+Pedro Calvillo
 
 
 ### System Name
 
-[HackTrack]
+HackTrack
 
 ### System Goal
-[HackTrack will estimate the number of registered students that woukd be likely to attend CPVC AI Hackathon by combining registration data with optional, attendance check ins and past event attendance patterns, so organizers can plan food, drinks, and swag within their budget while protecting participant privacy.]
+For CPVC AI Hackathon organizers, accurately planing food, drinks, and swag for expected attendees, measured by the accuracy of predicted attendance compared with actual check-ins, moving from no reliable attendance forecast to at least 85% prediction accuracy, without collecting unnecessary personal information or exceeding the event budget.
 
 ### Who Is Better Off When This Works?
 
-[CPVC organizers and hackathon participants are better off because organizers can prepare appropriate event resources and participants receive a better supported event experience]
+CPVC organizers and hackathon participants are better off because organizers can prepare appropriate event resources and participants receive a better supported event experience
