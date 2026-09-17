@@ -27,7 +27,6 @@ Finally, T7: Present Forecast Summary shows the organizer the expected attendanc
 
 ```mermaid
 flowchart TD
-    flowchart TD
     S["Workflow trigger: Organizer selects Create Attendance Forecast after registration opens"] --> T1["T1: Retrieve Event Planning Context"]
     U["Updated forecast trigger: Organizer adds registration information, receives optional attendance-intent responses, or requests a forecast before supply purchases"] --> T1
     T1 --> T2["T2: Collect Attendance Inputs"]
