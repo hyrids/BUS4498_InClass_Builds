@@ -15,7 +15,7 @@ A forecasting run begins when a CPVC AI Hackathon organizer selects Create Atten
 The run is complete when HackTrack has reviewed the available registration, optional attendance-intent, and anonymized past-event data; created an evidence-based estimated attendance range; calculated recommended amounts of food, drinks, and swag within the stated budget; recorded any missing data or assumptions; and displayed the forecast summary for organizer review. Completion never means that supplies were purchased, students were contacted, or individual participant information was shared.
 ### 1.4 General Workflow
 
-[Describe the overall sequence of tasks in one or two paragraphs. Explain the normal path first, followed by the most important exception paths and human-review points.]
+The system first performs T1: Retrieve Event Planning Context to load the event date, available budget, supply categories, current registration count, and any organizer-provided planning assumptions. It then performs T2: Collect Attendance Inputs, using current registration data and optional attendance-intent responses. T3: Review Anonymized Attendance Patterns compares available past event registration and check-in patterns to identify a reasonable expected attendance rate. The system uses aggregated or anonymized information and does not reveal an individual student’s attendance history.
 
 ### 1.5 Workflow Diagram
 
