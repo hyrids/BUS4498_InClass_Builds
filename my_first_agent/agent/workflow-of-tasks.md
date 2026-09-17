@@ -27,10 +27,28 @@ Finally, T7: Present Forecast Summary shows the organizer the expected attendanc
 
 ```mermaid
 flowchart TD
-    T1["T1: First task"] --> T2["T2: Second task"]
-    T2 --> D1{"Decision condition?"}
-    D1 -->|Yes| T3["T3: Next task"]
-    D1 -->|No| H1["Human review"]
-    H1 --> T3
-    T3 --> C1([C1: Completion state])
+    flowchart TD
+    S["Workflow trigger: Organizer selects Create Attendance Forecast after registration opens"] --> T1["T1: Retrieve Event Planning Context"]
+    U["Updated forecast trigger: Organizer adds registration information, receives optional attendance-intent responses, or requests a forecast before supply purchases"] --> T1
+    T1 --> T2["T2: Collect Attendance Inputs"]
+    T2 --> T3["T3: Review Anonymized Attendance Patterns"]
+    T3 --> D1{"D1: Is required data missing, conflicting, or too limited for a reasonable estimate?"}
+    D1 -->|"No"| T4["T4: Estimate Likely Attendance"]
+    D1 -->|"Yes"| T8["T8: Record Missing Data or Assumptions"]
+    T8 --> T9["T9: Ask Organizer for Planning Assumption or Updated Information"]
+    T9 --> D2{"D2: Did the organizer provide a planning assumption or updated information?"}
+    D2 -->|"Yes"| T1
+    D2 -->|"No"| W1["Await Organizer Input or Updated Information"]
+    W1 --> U
+    T4 --> T5["T5: Calculate Supply Recommendations"]
+    T5 --> T6["T6: Check Budget Fit"]
+    T6 --> D3{"D3: Do estimated supply costs fit within the available budget?"}
+    D3 -->|"Yes"| T7["T7: Present Forecast Summary"]
+    D3 -->|"No"| T10["T10: Present Lower-Cost Options"]
+    T10 --> T11["T11: Ask Organizer to Prioritize a Supply Category"]
+    T11 --> D4{"D4: Did the organizer choose a lower-cost option or supply priority?"}
+    D4 -->|"Yes"| T5
+    D4 -->|"No"| W2["Await Organizer Supply Decision"]
+    W2 --> U
+    T7 --> END(["Completion: Forecast summary displayed for organizer review; no supplies purchased, no students contacted, and no individual participant information shared"])
 ```
