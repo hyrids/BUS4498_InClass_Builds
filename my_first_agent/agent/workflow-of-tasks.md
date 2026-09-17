@@ -12,8 +12,7 @@ A forecasting run begins when a CPVC AI Hackathon organizer selects Create Atten
 
 ### 1.3 Completion Condition at Runtime
 
-[Describe how the system knows, on any given run, that this workflow is completed.]
-
+The run is complete when HackTrack has reviewed the available registration, optional attendance-intent, and anonymized past-event data; created an evidence-based estimated attendance range; calculated recommended amounts of food, drinks, and swag within the stated budget; recorded any missing data or assumptions; and displayed the forecast summary for organizer review. Completion never means that supplies were purchased, students were contacted, or individual participant information was shared.
 ### 1.4 General Workflow
 
 [Describe the overall sequence of tasks in one or two paragraphs. Explain the normal path first, followed by the most important exception paths and human-review points.]
