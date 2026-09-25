@@ -5,6 +5,12 @@
 task_id: "T4"
 task_name: "Estimate Likely Attendance"
 task_owner: "HackTrack attendance-planning agent"
+# Agent Inference Configuration
+Provider: Groq
+Model: "openai/gpt-oss-120b"
+Role: Compare attendance evidence, generate attendance ranges, and evaluate forecast uncertainty
+Maximum inference requests per task run: 6
+On inference failure or exhausted limits: Record the unresolved status and hand the case to the CPVC hackathon organizer.
 ```
 
 ## 1. Task Goal
@@ -32,6 +38,23 @@ task_owner: "HackTrack attendance-planning agent"
 * **Source:** T3 Review Anonymized Attendance Patterns
 
 ## 3. Tool Permissions and Boundaries
+### Task-Wide Limits
+
+- **Total task timeout:** 5 minutes per task run, including inference requests, tool calls, retries, and waiting.
+- **Maximum tool calls:** 6 total tool calls across all tools; retries count toward this limit.
+
+### Tool 1
+
+- **Tool name:** `check_input_completeness`
+- **Input:** Event planning context; Attendance inputs; Anonymized attendance patterns
+- **Output:** Unresolved issues
+- **Implementation Route:** functions/scripts
+- **Integration approach:** Direct integration
+- **Role in this task:** Supports the Check input completeness subtask.
+- **Task timeout:** 5 minutes total for the task run; this tool may use up to 1 minute per call.
+- **Maximum retries:** 1
+- **Retry only when:** A corrected input is provided or a temporary tool error occurs. Do not retry unchanged missing or invalid information.
+- **On timeout, exhausted retries, or an error that cannot be retried:** Record the unresolved status and hand the case to the CPVC hackathon organizer. Do not continue as if the inputs were complete.
 
 ## 4. How the Agent Should Reason
 
