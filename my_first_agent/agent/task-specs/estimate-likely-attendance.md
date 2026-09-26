@@ -56,6 +56,45 @@ On inference failure or exhausted limits: Record the unresolved status and hand 
 - **Retry only when:** A corrected input is provided or a temporary tool error occurs. Do not retry unchanged missing or invalid information.
 - **On timeout, exhausted retries, or an error that cannot be retried:** Record the unresolved status and hand the case to the CPVC hackathon organizer. Do not continue as if the inputs were complete.
 
+### Tool 2
+
+- **Tool name:** `compare_attendance_evidence`
+- **Input:** Attendance inputs; Anonymized attendance patterns
+- **Output:** Evidence summary
+- **Implementation Route:** functions/scripts
+- **Integration approach:** Direct integration
+- **Role in this task:** Supports the Compare attendance evidence subtask.
+- **Task timeout:** 5 minutes total for the task run; this tool may use up to 1 minute per call.
+- **Maximum retries:** 1
+- **Retry only when:** Additional valid aggregate evidence is provided or a temporary tool error occurs.
+- **On timeout, exhausted retries, or an error that cannot be retried:** Record the evidence as incomplete and hand the case to the CPVC hackathon organizer.
+
+### Tool 3
+
+- **Tool name:** `generate_attendance_range`
+- **Input:** Event planning context; Attendance inputs; Anonymized attendance patterns
+- **Output:** Result or recommendation
+- **Implementation Route:** functions/scripts
+- **Integration approach:** Direct integration
+- **Role in this task:** Supports the Generate attendance range subtask.
+- **Task timeout:** 5 minutes total for the task run; this tool may use up to 1 minute per call.
+- **Maximum retries:** 0
+- **Retry only when:** Not applicable.
+- **On timeout, exhausted retries, or an error that cannot be retried:** Record the result as undetermined and hand the case to the CPVC hackathon organizer. Do not present an unsupported estimate.
+
+### Tool 4
+
+- **Tool name:** `evaluate_forecast_uncertainty`
+- **Input:** Event planning context; Attendance inputs; Anonymized attendance patterns
+- **Output:** Evidence summary
+- **Implementation Route:** functions/scripts
+- **Integration approach:** Direct integration
+- **Role in this task:** Supports the Evaluate forecast uncertainty subtask.
+- **Task timeout:** 5 minutes total for the task run; this tool may use up to 1 minute per call.
+- **Maximum retries:** 0
+- **Retry only when:** Not applicable.
+- **On timeout, exhausted retries, or an error that cannot be retried:** Record the unresolved uncertainty and hand the case to the CPVC hackathon organizer. Do not hide limitations or continue as if the forecast were reliable.
+
 ## 4. How the Agent Should Reason
 
 ### Permitted Subtask 1
