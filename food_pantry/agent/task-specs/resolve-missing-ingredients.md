@@ -5,6 +5,13 @@
 task_id: "T07"
 task_name: "Resolve Missing Ingredients"
 task_owner: "Pedro Calvillo"
+
+# Agent Inference Configuration
+Provider: Groq
+Model: "openai/gpt-oss-120b"
+Role: Chooses the next permitted subtask after each finding; performs the subtask Suggest ingredient substitution; writes the final resolution record
+Maximum inference requests per task run: 10
+On inference failure or exhausted limits: Record the unresolved status and hand the case to the student through T13 (Resolve Unfeasible or Uncertain Cases).
 ```
 
 ## 1. Task Goal
