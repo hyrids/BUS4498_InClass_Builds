@@ -54,6 +54,24 @@
       </div>
       <p id="board-status" class="muted" role="status">Loading events…</p>
       <ul id="event-board" class="board"></ul>
+
+      <details class="card mod" id="moderator-panel">
+        <summary>Moderator sign-in</summary>
+        <form id="moderator-sign-in">
+          <label for="moderator-email">Email</label>
+          <input id="moderator-email" type="email" autocomplete="username" required>
+          <label for="moderator-password">Password</label>
+          <input id="moderator-password" type="password" autocomplete="current-password" required>
+          <button type="submit" id="moderator-sign-in-button">Sign in</button>
+        </form>
+        <div id="moderator-status" class="result" hidden aria-live="polite"></div>
+        <div id="moderator-tools" hidden>
+          <p class="muted">Signed in as <span id="moderator-name"></span>.</p>
+          <button class="ghost" type="button" id="moderator-sign-out">Sign out</button>
+          <h3>Waiting for review</h3>
+          <ul id="waiting-board" class="board preview"></ul>
+        </div>
+      </details>
     </section>
   </main>
 

@@ -11,6 +11,15 @@
   const board = document.getElementById("event-board");
   const boardStatus = document.getElementById("board-status");
   const filterButtons = Array.from(document.querySelectorAll("[data-filter]"));
+  const moderatorSignInForm = document.getElementById("moderator-sign-in");
+  const moderatorEmail = document.getElementById("moderator-email");
+  const moderatorPassword = document.getElementById("moderator-password");
+  const moderatorSignInButton = document.getElementById("moderator-sign-in-button");
+  const moderatorStatus = document.getElementById("moderator-status");
+  const moderatorTools = document.getElementById("moderator-tools");
+  const moderatorName = document.getElementById("moderator-name");
+  const moderatorSignOut = document.getElementById("moderator-sign-out");
+  const waitingBoard = document.getElementById("waiting-board");
   const agentUrl = `${String(config.supabaseUrl || "").replace(/\/$/, "")}/functions/v1/submit-event`;
   const supabaseClient = window.supabase && config.supabaseUrl && config.publishableKey
     ? window.supabase.createClient(config.supabaseUrl, config.publishableKey)
@@ -18,6 +27,7 @@
 
   let events = [];
   let activeFilter = "all";
+  let currentModerator = null;
 
   function setText(element, text) {
     element.textContent = text || "";
@@ -122,6 +132,121 @@
     return item;
   }
 
+  function setModeratorStatus(message, isError) {
+    if (!message) {
+      moderatorStatus.hidden = true;
+      moderatorStatus.replaceChildren();
+      return;
+    }
+    moderatorStatus.hidden = false;
+    moderatorStatus.className = `result ${isError ? "error" : "waiting"}`;
+    moderatorStatus.replaceChildren(element("p", "result-label", isError ? "Could not sign in" : "Moderator"));
+    moderatorStatus.appendChild(element("p", "", message));
+  }
+
+  function renderWaiting(eventsToReview) {
+    waitingBoard.replaceChildren();
+    if (!eventsToReview.length) {
+      waitingBoard.appendChild(element("li", "empty", "No posts are waiting for review."));
+      return;
+    }
+
+    eventsToReview.forEach((event) => {
+      const item = eventCard(event);
+      const review = element("div", "review");
+      review.appendChild(element("p", "why", event.status_reason || "This post needs moderator review."));
+      review.appendChild(element("p", "original", event.announcement || "Original announcement not available."));
+      const actions = element("p", "actions");
+      const approveButton = element("button", "", "Approve");
+      approveButton.type = "button";
+      const rejectButton = element("button", "ghost", "Reject");
+      rejectButton.type = "button";
+      approveButton.addEventListener("click", () => updateReview(event, "published", approveButton, rejectButton));
+      rejectButton.addEventListener("click", () => updateReview(event, "rejected", approveButton, rejectButton));
+      actions.appendChild(approveButton);
+      actions.appendChild(rejectButton);
+      review.appendChild(actions);
+      item.appendChild(review);
+      waitingBoard.appendChild(item);
+    });
+  }
+
+  async function loadWaiting() {
+    if (!currentModerator || !supabaseClient) return;
+    const { data, error } = await supabaseClient
+      .from("events")
+      .select("id, created_at, status, title, club, event_date, start_time, end_time, place_name, place_detail, cost, free_food, summary, flyer_url, announcement, status_reason")
+      .eq("status", "waiting")
+      .order("created_at", { ascending: true });
+    if (error) {
+      setModeratorStatus("The waiting posts could not load. Check the moderator database permissions.", true);
+      return;
+    }
+    setModeratorStatus("");
+    renderWaiting(Array.isArray(data) ? data : []);
+  }
+
+  async function updateReview(event, status, approveButton, rejectButton) {
+    if (!currentModerator || !supabaseClient) return;
+    approveButton.disabled = true;
+    rejectButton.disabled = true;
+    const { error } = await supabaseClient
+      .from("events")
+      .update({
+        status,
+        status_reason: status === "published" ? "" : "Rejected by moderator.",
+        reviewed_at: new Date().toISOString(),
+        reviewed_by: currentModerator.id,
+      })
+      .eq("id", event.id)
+      .eq("status", "waiting");
+    if (error) {
+      approveButton.disabled = false;
+      rejectButton.disabled = false;
+      setModeratorStatus("That review could not be saved. Check the moderator database permissions.", true);
+      return;
+    }
+    await Promise.all([loadWaiting(), loadEvents()]);
+  }
+
+  async function updateModeratorUI() {
+    const signedIn = Boolean(currentModerator);
+    moderatorSignInForm.hidden = signedIn;
+    moderatorTools.hidden = !signedIn;
+    if (!signedIn) {
+      moderatorName.textContent = "";
+      waitingBoard.replaceChildren();
+      return;
+    }
+    moderatorName.textContent = currentModerator.email || "moderator";
+    await loadWaiting();
+  }
+
+  async function signInModerator(event) {
+    event.preventDefault();
+    if (!supabaseClient) {
+      setModeratorStatus("Add the Supabase configuration before signing in.", true);
+      return;
+    }
+    moderatorSignInButton.disabled = true;
+    setModeratorStatus("");
+    const { error } = await supabaseClient.auth.signInWithPassword({
+      email: moderatorEmail.value.trim(),
+      password: moderatorPassword.value,
+    });
+    moderatorSignInButton.disabled = false;
+    if (error) {
+      setModeratorStatus("The email or password was not accepted.", true);
+      return;
+    }
+    moderatorPassword.value = "";
+  }
+
+  async function signOutModerator() {
+    if (!supabaseClient) return;
+    await supabaseClient.auth.signOut();
+  }
+
   async function loadEvents() {
     if (!supabaseClient) {
       setBoardStatus("Add the Supabase configuration to load events.", true);
@@ -217,5 +342,17 @@
   });
   postForm.addEventListener("submit", submitAnnouncement);
   refreshButton.addEventListener("click", loadEvents);
+  moderatorSignInForm.addEventListener("submit", signInModerator);
+  moderatorSignOut.addEventListener("click", signOutModerator);
+  if (supabaseClient) {
+    supabaseClient.auth.onAuthStateChange((_event, session) => {
+      currentModerator = session && session.user ? session.user : null;
+      updateModeratorUI();
+    });
+  } else {
+    moderatorSignInForm.hidden = false;
+    moderatorTools.hidden = true;
+    setModeratorStatus("Add the Supabase configuration before signing in.", true);
+  }
   loadEvents();
 }());
