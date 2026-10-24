@@ -4,6 +4,7 @@
   const config = window.EVENT_RADAR_CONFIG || {};
   const postForm = document.getElementById("post-form");
   const announcementInput = document.getElementById("announcement");
+  const flyerInput = document.getElementById("flyer");
   const postButton = document.getElementById("post-button");
   const postResult = document.getElementById("post-result");
   const refreshButton = document.getElementById("refresh-button");
@@ -110,6 +111,14 @@
 
     item.appendChild(date);
     item.appendChild(body);
+    const flyerPrefix = `${String(config.supabaseUrl || "").replace(/\/$/, "")}/storage/v1/object/public/flyers/`;
+    if (typeof event.flyer_url === "string" && event.flyer_url.startsWith(flyerPrefix)) {
+      const flyer = element("img", "flyer");
+      flyer.src = event.flyer_url;
+      flyer.alt = `${event.title || "Event"} flyer`;
+      flyer.loading = "lazy";
+      item.appendChild(flyer);
+    }
     return item;
   }
 
@@ -122,7 +131,7 @@
     setBoardStatus("Loading events…", false);
     const { data, error } = await supabaseClient
       .from("events")
-      .select("id, created_at, status, title, club, event_date, start_time, end_time, place_name, place_detail, cost, free_food, summary")
+      .select("id, created_at, status, title, club, event_date, start_time, end_time, place_name, place_detail, cost, free_food, summary, flyer_url")
       .eq("status", "published")
       .order("event_date", { ascending: true, nullsFirst: false })
       .order("start_time", { ascending: true, nullsFirst: false });
@@ -159,11 +168,21 @@
       announcementInput.focus();
       return;
     }
+    const flyer = flyerInput.files && flyerInput.files[0] ? flyerInput.files[0] : null;
+    if (flyer && flyer.size > 5 * 1024 * 1024) {
+      showResult("error", "The flyer must be 5 MB or smaller.", []);
+      return;
+    }
+    if (flyer && flyer.type !== "image/jpeg" && flyer.type !== "image/png") {
+      showResult("error", "The flyer must be a JPG or PNG image.", []);
+      return;
+    }
     postButton.disabled = true;
     postButton.textContent = "Reviewing…";
     postResult.hidden = true;
     const formData = new FormData();
     formData.append("announcement", announcement);
+    if (flyer) formData.append("flyer", flyer);
     try {
       const response = await fetch(agentUrl, {
         method: "POST",
@@ -176,9 +195,10 @@
         return;
       }
       showResult(result.status, result.message, result.reasons);
-      if (result.status === "published") {
+      if (result.ok) {
         announcementInput.value = "";
-        await loadEvents();
+        flyerInput.value = "";
+        if (result.status === "published") await loadEvents();
       }
     } catch (error) {
       showResult("error", "The agent could not be reached. Check your connection and try again.", []);
